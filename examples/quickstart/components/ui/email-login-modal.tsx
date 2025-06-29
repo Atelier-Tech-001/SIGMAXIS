@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -7,6 +8,7 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { MailIcon } from "lucide-react";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 export function EmailLoginModal() {
   const [email, setEmail] = useState("");
@@ -15,11 +17,22 @@ export function EmailLoginModal() {
     new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY!);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí se integrará Magic.link o Web3Auth
-    console.log("Email submitted:", email);
+  
+    if (!magic) return;
+  
+    try {
+      const didToken = await magic.auth.loginWithEmailOTP({ email });
+      const metadata = await magic.user.getInfo();
+  
+      console.log("Metadata:", metadata);
+      router.refresh(); // router.push si querés redireccionar
+    } catch (err) {
+      console.error("Login error", err);
+    }
   };
+  
 
   return (
     <Dialog>
@@ -31,9 +44,9 @@ export function EmailLoginModal() {
       </DialogTrigger>
 
       <DialogContent className="bg-black text-white border border-zinc-800 shadow-[0_0_30px_#42efdf33] backdrop-blur-md">
-        <h2 className="text-xl font-semibold text-primary mb-2">
+        <DialogTitle className="text-xl font-semibold text-primary mb-2">
           Accedé con tu email
-        </h2>
+        </DialogTitle>
         <p className="text-sm text-zinc-400 mb-6">
           Te generamos una wallet efímera para que puedas comprar tu instante.
         </p>

@@ -1,4 +1,10 @@
 // lib/magic.ts
 import { Magic } from '@magic-sdk/admin';
 
-export const magic = new Magic(process.env.MAGIC_SECRET_KEY!);
+let magic: Magic | null = null;
+
+if (typeof window !== "undefined" && !magic) {
+  magic = new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY!);
+}
+
+export default magic;
