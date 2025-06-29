@@ -18,8 +18,10 @@
     "node": ">=18"
   },
   "dependencies": {
+    "framer-motion": "^10.12.16",
     "lucide-react": "^0.522.0",
     "next-images": "^1.8.5",
+    "react-spring": "^10.0.1",
     "wagmi": "^2.15.6"
   }
 }

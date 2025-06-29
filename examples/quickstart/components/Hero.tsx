@@ -1,21 +1,25 @@
 "use client";
 
-
 import { useAccount } from "wagmi";
 import { PromoBanner } from "@/components/PromoBanner/PromoBanner";
-//import { motion } from "framer-motion";
+import { useSpring, animated } from "react-spring"; // Agrega esto
 
 export function Hero() {
   const { isConnected } = useAccount();
+
+  // Configura la animación
+  const fadeInUp = useSpring({
+    from: { opacity: 0, transform: "translateY(40px)" },
+    to: { opacity: 1, transform: "translateY(0px)" },
+    config: { duration: 800, easing: t => 1 - Math.pow(1 - t, 3) }, // easeOut
+  });
 
   return (
     <>
       {isConnected && <PromoBanner />}
 
-      <section
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+      <animated.section // Cambia a animated.section
+        style={fadeInUp} // Aplica la animación
         className="relative mx-auto mt-28 text-center max-w-4xl px-4"
       >
         <h1 className="text-7xl font-bold text-zinc-100 drop-shadow-[0_0_25px_rgba(66,239,223,0.5)]">
@@ -36,7 +40,7 @@ export function Hero() {
             Ingresar como invitado
           </button>
         </div>
-      </section>
+      </animated.section>
     </>
   );
 }
