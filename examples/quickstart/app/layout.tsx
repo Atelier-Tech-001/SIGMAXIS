@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { headers } from "next/headers";
@@ -19,8 +20,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MetaMask SDK Quickstart",
-  description: "MetaMask SDK Quickstart app",
+  title: "SIGMAXIS",
+  description:
+    "SIGMASIX: APP DEL FIN DEL MUNDO DIGITAL. PERSISTIENDO EL INSTANTE SINGULAR",
 };
 
 export default async function RootLayout({
@@ -46,10 +48,12 @@ export default async function RootLayout({
         </div>
 
         <main className="flex flex-col max-w-screen-lg mx-auto pb-20">
-          <Providers initialState={initialState}>
-            <Navbar />
-            {children}
-          </Providers>
+          <MagicContextProvider>
+            <Providers initialState={initialState}>
+              <Navbar />
+              {children}
+            </Providers>
+          </MagicContextProvider>
         </main>
       </body>
     </html>

@@ -1,38 +1,29 @@
-/* eslint-disable react/jsx-no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { Magic } from "magic-sdk";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { MailIcon } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { useMagic } from "@/lib/context/MagicContextProvider";
+
 
 export function EmailLoginModal() {
   const [email, setEmail] = useState("");
-  const magic =
-    typeof window !== "undefined" &&
-    new Magic(process.env.NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY!);
+  const { loginWithEmail } = useMagic();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    if (!magic) return;
-  
     try {
-      const didToken = await magic.auth.loginWithEmailOTP({ email });
-      const metadata = await magic.user.getInfo();
-  
-      console.log("Metadata:", metadata);
-      router.refresh(); // router.push si querés redireccionar
+      await loginWithEmail(email);
+      router.refresh(); // o push('/dashboard'), si querés redireccionar
     } catch (err) {
-      console.error("Login error", err);
+      console.error("Login error:", err);
     }
   };
-  
 
   return (
     <Dialog>
@@ -60,7 +51,6 @@ export function EmailLoginModal() {
             placeholder="tu@email.com"
             className="bg-zinc-900 border border-zinc-700 text-white p-3 rounded-md outline-none focus:ring-2 focus:ring-primary"
           />
-
           <Button
             type="submit"
             className="bg-primary text-black hover:bg-[#2bdac8]"
