@@ -4,7 +4,7 @@
 import { useAccount } from "wagmi";
 import { PromoBanner } from "@/components/PromoBanner/PromoBanner";
 //import { useSpring, animated } from "@react-spring/web"; 
-import { EmailLoginModal } from "@/components/ui/email-login-modal";
+import { EmailLoginModal } from "@/components/ui/EmailLoginModal";
 
 export function Hero() {
   const { isConnected } = useAccount();

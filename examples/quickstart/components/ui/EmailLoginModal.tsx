@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-"use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -9,9 +6,9 @@ import { MailIcon } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { useMagic } from "@/lib/context/MagicContextProvider";
 
-
 export function EmailLoginModal() {
   const [email, setEmail] = useState("");
+  const [open, setOpen] = useState(false); // 👈 estado del modal
   const { loginWithEmail } = useMagic();
   const router = useRouter();
 
@@ -19,16 +16,21 @@ export function EmailLoginModal() {
     e.preventDefault();
     try {
       await loginWithEmail(email);
-      router.refresh(); // o push('/dashboard'), si querés redireccionar
+      setOpen(false); // 👈 cerrá el modal
+      router.refresh(); // o push('/dashboard') si querés redirigir
     } catch (err) {
       console.error("Login error:", err);
     }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" className="text-primary hover:text-white">
+        <Button
+          variant="ghost"
+          className="text-primary hover:text-white"
+          onClick={() => setOpen(true)}
+        >
           <MailIcon className="mr-2 h-4 w-4" />
           Ingresar sin wallet
         </Button>
