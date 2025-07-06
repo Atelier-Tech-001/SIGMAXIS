@@ -2,6 +2,7 @@
 
 import { useMagic } from "@/lib/context/MagicContextProvider";
 import { Hero } from "@/components/ui/Hero";
+import { CreateTimestampForm } from "@/components/ui/CreateTimestampForm";
 
 export default function Home() {
   const { userEmail } = useMagic();
@@ -10,15 +11,14 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full px-3 md:px-0 text-white">
       <div className="flex flex-col gap-8 items-center sm:items-start w-full">
-        <Hero />
+        {/* 👇 Si no está logueado, mostramos Hero con botones de login */}
+        {!isLoggedIn && <Hero />}
 
-        {isLoggedIn ? (
-          <p className="text-xl">
-            Hola <span className="text-primary">{userEmail}</span>, ya estás logueado.
-          </p>
-        ) : null}
+        {/* 👇 Si está logueado, mostramos el formulario de timestamp */}
+        {isLoggedIn && <CreateTimestampForm />}
       </div>
 
+      {/* Footer solo visible si no está logueado */}
       {!isLoggedIn && (
         <footer
           className="fixed bottom-4 left-0 w-full flex justify-center pointer-events-none"

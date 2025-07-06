@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -8,18 +10,19 @@ import { useMagic } from "@/lib/context/MagicContextProvider";
 
 export function EmailLoginModal() {
   const [email, setEmail] = useState("");
-  const [open, setOpen] = useState(false); // 👈 estado del modal
+  const [open, setOpen] = useState(false); // controla apertura/cierre del modal
   const { loginWithEmail } = useMagic();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await loginWithEmail(email);
-      setOpen(false); // 👈 cerrá el modal
-      router.refresh(); // o push('/dashboard') si querés redirigir
+      await loginWithEmail(email); // login con Magic Link
+      setOpen(false);              // cierra el modal
+      router.refresh();            // refresca la página o podés usar router.push()
     } catch (err) {
       console.error("Login error:", err);
+      alert("Error al iniciar sesión. Revisá la consola.");
     }
   };
 
@@ -29,7 +32,6 @@ export function EmailLoginModal() {
         <Button
           variant="ghost"
           className="text-primary hover:text-white"
-          onClick={() => setOpen(true)}
         >
           <MailIcon className="mr-2 h-4 w-4" />
           Ingresar sin wallet

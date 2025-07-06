@@ -2,9 +2,7 @@
 "use client";
 
 import { useAccount } from "wagmi";
-import { PromoBanner } from "@/components/PromoBanner/PromoBanner";
 //import { useSpring, animated } from "@react-spring/web"; 
-import { EmailLoginModal } from "@/components/ui/EmailLoginModal";
 
 export function Hero() {
   const { isConnected } = useAccount();
@@ -18,8 +16,6 @@ export function Hero() {
 
   return (
     <>
-      {isConnected && <PromoBanner />}
-
       <section 
        // style={fadeInUp}  Aplica la animación
         className="relative mx-auto mt-28 text-center max-w-4xl px-4"
@@ -33,13 +29,6 @@ export function Hero() {
           <br />
           No necesitás saber de crypto. Conectá o ingresá como invitado.
         </p>
-
-        <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-          <button className="bg-primary text-black font-semibold px-6 py-3 rounded-xl hover:shadow-[0_0_20px_theme('colors.primary')] transition-shadow">
-            Conectá tu wallet
-          </button>
-          <EmailLoginModal />
-        </div>
       </section>
     </>
   );
