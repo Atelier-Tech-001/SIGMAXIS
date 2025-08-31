@@ -12,6 +12,8 @@ import {
 import { formatAddress } from "@/lib/utils";
 import { EmailLoginModal } from "@/components/ui/EmailLoginModal";
 import { ChevronDown } from "lucide-react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export function Navbar() {
   const { userEmail, logout: logoutMagic } = useMagic();
@@ -19,8 +21,10 @@ export function Navbar() {
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChain, chains } = useSwitchChain();
-
+  const router = useRouter();
   const connector = connectors[0];
+
+  
 
   return (
     <nav className="flex justify-between items-center py-4 px-6 border-b border-zinc-800">

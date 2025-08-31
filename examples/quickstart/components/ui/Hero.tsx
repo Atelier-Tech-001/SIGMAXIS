@@ -25,7 +25,7 @@ export function Hero() {
         </h1>
 
         <p className="text-white opacity-70 text-lg mt-6 leading-relaxed">
-          Asegurá tu segundo en la historia. Tu tiempo, tu token.
+          Asegurá tu segundo antes del colapso. <br /> Tu tiempo, tu token.
           <br />
           No necesitás saber de crypto. Conectá o ingresá como invitado.
         </p>
