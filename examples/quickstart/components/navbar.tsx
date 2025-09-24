@@ -1,7 +1,7 @@
 "use client";
 
 import { useMagic } from "@/lib/context/MagicContextProvider";
-import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,27 +9,27 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { formatAddress } from "@/lib/utils";
 import { EmailLoginModal } from "@/components/ui/EmailLoginModal";
-import { ChevronDown } from "lucide-react";
-import { useEffect } from "react";
+import { Menu, ChevronDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export function Navbar() {
   const { userEmail, logout: logoutMagic } = useMagic();
-  const { address, isConnected, chain } = useAccount();
+  const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
-  const { switchChain, chains } = useSwitchChain();
   const router = useRouter();
   const connector = connectors[0];
 
-  
+  const isLoggedIn = !!userEmail || isConnected;
 
   return (
     <nav className="flex justify-between items-center py-4 px-6 border-b border-zinc-800">
       {/* Logo */}
-      <div className="flex items-center gap-2">
+      <div
+        onClick={() => router.push("/")}
+        className="flex items-center gap-2 cursor-pointer"
+      >
         <span className="text-[#42efdf] text-3xl font-bold tracking-widest">
           ΣXIS
         </span>
@@ -39,71 +39,64 @@ export function Navbar() {
       </div>
 
       <div className="flex gap-3 items-center">
-        {/* Si está logueado por Magic */}
-        {userEmail && (
-          <>
-            <span className="text-sm text-primary">{userEmail}</span>
-            <Button
-              variant="outline"
-              onClick={logoutMagic}
-              className="bg-black text-magenta-400 border-magenta-400 
-                hover:bg-magenta-500 hover:text-black 
-                shadow-[0_0_10px_#ff00ff,0_0_20px_#ff00ff] 
-                transition-all duration-300"
-            >
-              Logout Magic
-            </Button>
-          </>
-        )}
+        {/* ✅ Menú hamburguesa si está logueado */}
+        {isLoggedIn && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 bg-black text-white border-zinc-700 hover:bg-zinc-800"
+              >
+                <Menu className="h-5 w-5" />
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-black text-white border border-zinc-700 rounded-lg p-2 w-48">
+              <DropdownMenuItem
+                onClick={() => router.push("/perfil")}
+                className="cursor-pointer hover:bg-zinc-800 rounded-md px-3 py-2"
+              >
+                Perfil
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => router.push("/dashboard")}
+                className="cursor-pointer hover:bg-zinc-800 rounded-md px-3 py-2"
+              >
+                Dashboard
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => router.push("/mapa")}
+                className="cursor-pointer hover:bg-zinc-800 rounded-md px-3 py-2"
+              >
+                Mapa
+              </DropdownMenuItem>
 
-        {/* Si está conectado por wallet */}
-        {isConnected && !userEmail && (
-          <div className="flex-col md:flex-row flex gap-2">
-            {/* Selector de red */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="bg-white h-fit md:px-3 py-2 rounded-2xl font-semibold flex justify-center  items-center gap-1">
-                {chain?.name.split(" ").slice(0, 2).join(" ")} <ChevronDown />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full justify-center rounded-2xl">
-                {chains.map(
-                  (c) =>
-                    c.id !== chain?.id && (
-                      <DropdownMenuItem
-                        key={c.id}
-                        onClick={() => switchChain({ chainId: c.id })}
-                        className="cursor-pointer w-full flex justify-center rounded-2xl font-semibold"
-                      >
-                        {c.name}
-                      </DropdownMenuItem>
-                    )
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+              <div className="border-t border-zinc-700 my-2" />
 
-            {/* Dirección + logout */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="bg-white h-fit px-7 py-2 rounded-2xl font-semibold flex items-center gap-1">
-                {formatAddress(address)} <ChevronDown />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-full flex justify-center rounded-2xl">
+              {userEmail && (
+                <DropdownMenuItem
+                  onClick={logoutMagic}
+                  className="text-magenta-400 hover:bg-magenta-500 hover:text-black rounded-md px-3 py-2 cursor-pointer"
+                >
+                  Logout Magic
+                </DropdownMenuItem>
+              )}
+              {isConnected && (
                 <DropdownMenuItem
                   onClick={() => disconnect()}
-                  className="bg-black text-orange-400 
-                    hover:bg-orange-500 hover:text-black 
-                    shadow-[0_0_10px_#ff9900,0_0_20px_#ff9900] 
-                    cursor-pointer w-full flex justify-center rounded-2xl font-semibold transition-all duration-300"
+                  className="text-orange-400 hover:bg-orange-500 hover:text-black rounded-md px-3 py-2 cursor-pointer"
                 >
                   Disconnect Wallet
                 </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         )}
 
-        {/* Si no hay sesión */}
-        {!userEmail && !isConnected && (
+        {/* ✅ Botones de login si no hay sesión */}
+        {!isLoggedIn && (
           <>
-            <EmailLoginModal />
+            <EmailLoginModal redirectTo="/mint" />
             <Button
               className="bg-black text-white px-6 py-2 rounded-xl font-semibold shadow-[0_0_10px_#42efdf,0_0_20px_#42efdf] hover:shadow-[0_0_15px_#42efdf,0_0_30px_#42efdf] transition-shadow duration-300"
               onClick={() => connect({ connector })}
